@@ -1,5 +1,5 @@
-# TicTacToe
-simple tic tac toe made with useReducer
+# N dimensional TicTacToe
+simple N dimensional tic tac toe made with useReducer
 
 ## Use
 ```
@@ -8,4 +8,4 @@ cd TicTacToe
 npm start
 ```
 ## ScreenShot
-![screenShot](screenShot.PNG)
+![screenShot](Ndim.PNG)
