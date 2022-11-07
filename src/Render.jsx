@@ -29,33 +29,46 @@ export default function RenderGame() {
     useEffect(()=>{console.log(state)},[state]);
     
     return (
+    <div className="app">
+        <h1>N Dimension Tic Tac Toe</h1>
       <div className="screen">
-        <div className="board">
-            {state.board.map((row,row_index)=>(
-                <div className="row">
-                    {row.map((column, column_index)=>(
-                        <button
-                            className="cell"
-                            type="text"
-                            id={"row"+row_index+1 + "_column"+ column_index+1}
-                            onClick={() => dispatch({type:"play",payload:{position:[row_index,column_index]}})}
-                            >
-                            {state.board[row_index][column_index]}
-                        </button>
-                    ))}
-                </div>
-            ))}
+        <div className="board_plus_ctrls">
+            <div className="board">
+                {state.board.map((row,row_index)=>(
+                    <div className="row">
+                        {row.map((column, column_index)=>(
+                            <button
+                                className="cell"
+                                type="text"
+                                id={"row"+row_index+1 + "_column"+ column_index+1}
+                                onClick={() => dispatch({type:"play",payload:{position:[row_index,column_index]}})}
+                                >
+                                {state.board[row_index][column_index]}
+                            </button>
+                        ))}
+                    </div>
+                ))}
+            </div>
+            <div className="ctrls">
+                <button className="ctrl_button" onClick={() => dispatch({type:"reset",payload:{}})}>reset</button>
+                <button className="ctrl_button" onClick={() => dispatch({type:"skip",payload:{}})}>skip</button>
+            </div>
         </div>
-        <div className="ctrls">
-            <button className="ctrl_button" onClick={() => dispatch({type:"reset",payload:{}})}>reset</button>
-            <button className="ctrl_button" onClick={() => dispatch({type:"skip",payload:{}})}>skip</button>
-            <label className="ctrl_button">number of players</label>
-            <input className="ctrl_button" onChange={(e)=>dispatch({type:"updatePlayers",payload:{newNumPlayers:Number(e.nativeEvent.data)}})}></input>
-            <label className="ctrl_button">dimensions</label>
-            <input className="ctrl_button" onChange={(e)=>dispatch({type:"dimensions",payload:{dimension:Number(e.nativeEvent.data)}})}></input>
-            <label className="ctrl_button">consequitive moves per turn</label>
-            <input className="ctrl_button" onChange={(e)=>dispatch({type:"conseqTurns",payload:{conseqTurn:Number(e.nativeEvent.data)}})}></input>
+        <div className="inputs">
+            <div className="ctrl_input">
+                <label className="ctrl_button">number of players</label>
+                <input className="ctrl_button" onChange={(e)=>dispatch({type:"updatePlayers",payload:{newNumPlayers:Number(e.nativeEvent.data)}})}></input>
+            </div>
+            <div className="ctrl_input">
+                <label className="ctrl_button">dimensions</label>
+                <input className="ctrl_button" onChange={(e)=>dispatch({type:"dimensions",payload:{dimension:Number(e.nativeEvent.data)}})}></input>
+            </div>
+            <div className="ctrl_input">
+                <label className="ctrl_button">consequitive moves per turn</label>
+                <input className="ctrl_button" onChange={(e)=>dispatch({type:"conseqTurns",payload:{conseqTurn:Number(e.nativeEvent.data)}})}></input>
+            </div>
         </div>
+      </div>
       </div>
   )};
 
@@ -100,11 +113,11 @@ function reducer (state,action){
         case "reset":
             return initialState;
         case "play":
-            [CurrTurn, CurrPlayer] = calcTurnPerSequence(state)
+            const [CurrTurn, CurrPlayer] = calcTurnPerSequence(state)
             return {...state, 
                 board:updateBoard(state.curPlayer, action.payload.position, state.board),
                 currTurnPerSeq:CurrTurn,
-                currPlayer:CurrPlayer,
+                curPlayer:CurrPlayer,
                 turnNumber:state.turnNumber + 1}
         case "skip":
             return {...state, curPlayer:togglePlayer(state.curPlayer, state.players)}
@@ -117,14 +130,14 @@ function reducer (state,action){
         case "updatePlayers":
             let newPlayers = updatePlayers(action.payload.newNumPlayers,state)
             return {... state,
-                board: initialState.board,
+                board: [...Array(state.dimension).keys()].map((j)=>{return ([...Array(state.dimension).keys()].map((i)=>{return null}))}),
                 numPlayers:action.payload.newNumPlayers,
                 players:newPlayers,
                 curPlayer:newPlayers[0],
                 turnNumber:0}
         case "conseqTurns":
             return {... state,
-                board: initialState.board,
+                board:  [...Array(state.dimension).keys()].map((j)=>{return ([...Array(state.dimension).keys()].map((i)=>{return null}))}),
                 conseqTurnsPerSeq:action.payload.conseqTurn,
                 currPlayer:state.players[0],
                 turnNumber:0}
